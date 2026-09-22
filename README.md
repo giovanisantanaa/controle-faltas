@@ -1,75 +1,125 @@
-# React + TypeScript + Vite
+# Controle de Faltas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicacao web para acompanhamento de faltas academicas por disciplina.
 
-Currently, two official plugins are available:
+## Visao geral
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+O **Controle de Faltas** ajuda estudantes a monitorar rapidamente a quantidade de faltas em cada disciplina e a situacao em relacao ao limite permitido.
 
-## React Compiler
+Problema que resolve:
+- Centraliza o controle de faltas em uma interface simples.
+- Evita calculos manuais para saber quando a disciplina entra em risco.
+- Mantem os dados no navegador do proprio usuario.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Persistencia:
+- Os dados sao salvos em `localStorage` (chave `controle-faltas:disciplines`), sem backend.
 
-## Expanding the ESLint configuration
+## Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Funcionalidades atualmente presentes no projeto:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Cadastro de disciplinas.
+- Definicao da carga horaria por disciplina.
+- Controle de faltas por disciplina.
+- Adicao e remocao de faltas.
+- Controles rapidos `-2`, `-1`, `+1` e `+2`.
+- Limite de faltas calculado conforme a carga horaria.
+- Indicador de situacao da disciplina.
+- Resumo com total de disciplinas e disciplinas em atencao.
+- Persistencia local dos dados no navegador.
+- Interface responsiva para diferentes tamanhos de tela.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Regras de faltas
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Tabela de limites utilizada:
 
+| Carga horaria | Limite de faltas |
+| --- | --- |
+| 30h | 9 |
+| 45h | 13 |
+| 60h | 18 |
+| 75h | 22 |
+| 90h | 27 |
+| 120h | 36 |
+
+Estados de situacao implementados:
+
+| Estado interno | Descricao |
+| --- | --- |
+| `safe` | Dentro do limite |
+| `warning` | Proximo do limite (a partir de 80% do limite) |
+| `limit` | Limite atingido |
+| `failed` | Reprovado por faltas (acima do limite) |
+
+## Tecnologias
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- ESLint
+
+## Como executar localmente
+
+### Requisitos
+
+- Node.js (LTS recomendada)
+- npm
+
+### Comandos principais
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Aplicacao em desenvolvimento: `http://localhost:5173/`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Build de producao
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run build
 ```
+
+### Outros comandos disponiveis
+
+```bash
+npm run lint
+npm run preview
+```
+
+## Estrutura do projeto
+
+```text
+src/
+  components/   # componentes de interface (cards, formulario, resumo, etc.)
+  hooks/        # regras de estado e persistencia (useDisciplines)
+  utils/        # funcoes utilitarias de calculo de faltas
+  data/         # regras estaticas de negocio (limites por carga horaria)
+  types/        # tipos TypeScript da aplicacao
+  App.tsx       # composicao principal da tela
+```
+
+## CI/CD e GitHub Pages
+
+Este repositorio possui:
+
+- **CI automatica** (lint + build) em push para `main` e em `pull_request`.
+- **Deploy automatico no GitHub Pages** em push para `main`.
+
+URL publica configurada:
+
+- https://giovanisantanaa.github.io/controle-faltas/
+
+## Desenvolvimento
+
+Para contribuir:
+
+1. Crie uma branch a partir de `main`.
+2. Faca as alteracoes necessarias.
+3. Rode `npm run lint` e `npm run build`.
+4. Abra um Pull Request com a descricao das mudancas.
+
+## Licenca
+
+Licenca ainda nao definida neste repositorio.
