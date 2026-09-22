@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { DisciplineCard } from './components/DisciplineCard'
-import { DisciplineForm } from './components/DisciplineForm'
-import { EmptyState } from './components/EmptyState'
-import { Header } from './components/Header'
-import { Summary } from './components/Summary'
-import { useDisciplines } from './hooks/useDisciplines'
+import { useState } from "react";
+import { DisciplineCard } from "./components/DisciplineCard";
+import { DisciplineForm } from "./components/DisciplineForm";
+import { EmptyState } from "./components/EmptyState";
+import { Header } from "./components/Header";
+import { Summary } from "./components/Summary";
+import { useDisciplines } from "./hooks/useDisciplines";
 
 function App() {
-  const [showForm, setShowForm] = useState(false)
+  const [showForm, setShowForm] = useState(false);
 
   const {
     disciplines,
@@ -15,15 +15,15 @@ function App() {
     removeDiscipline,
     addAbsence,
     removeAbsence,
-  } = useDisciplines()
+  } = useDisciplines();
 
   function handleAddDiscipline(data: {
-    name: string
-    workload: 30 | 45 | 60 | 75 | 90 | 120
-    absences: number
+    name: string;
+    workload: 30 | 45 | 60 | 75 | 90 | 120;
+    absences: number;
   }) {
-    addDiscipline(data)
-    setShowForm(false)
+    addDiscipline(data);
+    setShowForm(false);
   }
 
   return (
@@ -32,9 +32,7 @@ function App() {
         <Header onAdd={() => setShowForm(true)} />
 
         <div className="mt-8 space-y-6">
-          {disciplines.length > 0 && (
-            <Summary disciplines={disciplines} />
-          )}
+          {disciplines.length > 0 && <Summary disciplines={disciplines} />}
 
           {showForm && (
             <DisciplineForm
@@ -51,8 +49,8 @@ function App() {
                 <DisciplineCard
                   key={discipline.id}
                   discipline={discipline}
-                  onAddAbsence={() => addAbsence(discipline.id)}
-                  onRemoveAbsence={() => removeAbsence(discipline.id)}
+                  onAddAbsence={(amount) => addAbsence(discipline.id, amount)}
+                  onRemoveAbsence={(amount) => removeAbsence(discipline.id, amount)}
                   onDelete={() => removeDiscipline(discipline.id)}
                 />
               ))}
@@ -61,7 +59,7 @@ function App() {
         </div>
       </div>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

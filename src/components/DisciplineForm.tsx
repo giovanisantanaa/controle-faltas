@@ -1,5 +1,4 @@
-
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ABSENCE_LIMITS, type Workload } from '../data/absenceRules'
 
 type DisciplineFormProps = {
@@ -12,6 +11,170 @@ type DisciplineFormProps = {
 }
 
 const workloads = Object.keys(ABSENCE_LIMITS).map(Number) as Workload[]
+
+function AbsenceControl({
+  value,
+  onChange,
+}: {
+  value: number
+  onChange: (value: number) => void
+}) {
+  function changeValue(amount: number) {
+    onChange(Math.max(value + amount, 0))
+  }
+
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2">
+      <button
+        type="button"
+        onClick={() => changeValue(-2)}
+        disabled={value === 0}
+        className="flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        −2
+      </button>
+
+      <button
+        type="button"
+        onClick={() => changeValue(-1)}
+        disabled={value === 0}
+        className="flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        −1
+      </button>
+
+      <div className="min-w-16 text-center">
+        <span className="text-xl font-semibold text-slate-900">
+          {value}
+        </span>
+
+        <span className="ml-1 text-xs text-slate-400">
+          faltas
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => changeValue(1)}
+        className="flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900"
+      >
+        +1
+      </button>
+
+      <button
+        type="button"
+        onClick={() => changeValue(2)}
+        className="flex h-10 min-w-12 items-center justify-center rounded-lg bg-slate-900 text-sm font-medium text-white transition hover:bg-slate-800"
+      >
+        +2
+      </button>
+    </div>
+  )
+}
+
+function WorkloadSelect({
+  value,
+  onChange,
+}: {
+  value: Workload
+  onChange: (value: Workload) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="flex w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-4 py-3 text-left text-sm outline-none transition hover:border-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <div>
+          <span className="font-medium text-slate-900">
+            {value} horas
+          </span>
+
+          <span className="ml-2 text-slate-400">
+            até {ABSENCE_LIMITS[value]} faltas
+          </span>
+        </div>
+
+        <svg
+          className={`h-4 w-4 text-slate-400 transition-transform ${
+            open ? 'rotate-180' : ''
+          }`}
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 7.5L10 12.5L15 7.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50"
+        >
+          {workloads.map((workload) => {
+            const selected = workload === value
+
+            return (
+              <button
+                key={workload}
+                type="button"
+                role="option"
+                aria-selected={selected}
+                onClick={() => {
+                  onChange(workload)
+                  setOpen(false)
+                }}
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition ${
+                  selected
+                    ? 'bg-slate-100 text-slate-900'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <span className="font-medium">
+                  {workload} horas
+                </span>
+
+                <span className="text-xs text-slate-400">
+                  até {ABSENCE_LIMITS[workload]} faltas
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function DisciplineForm({
   onSubmit,
@@ -84,39 +247,20 @@ export function DisciplineForm({
             Carga horária
           </label>
 
-          <select
-            id="discipline-workload"
+          <WorkloadSelect
             value={workload}
-            onChange={(event) =>
-              setWorkload(Number(event.target.value) as Workload)
-            }
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-          >
-            {workloads.map((value) => (
-              <option key={value} value={value}>
-                {value} horas — até {ABSENCE_LIMITS[value]} faltas
-              </option>
-            ))}
-          </select>
+            onChange={setWorkload}
+          />
         </div>
 
         <div>
-          <label
-            htmlFor="discipline-absences"
-            className="mb-2 block text-sm font-medium text-slate-700"
-          >
+          <p className="mb-2 text-sm font-medium text-slate-700">
             Faltas atuais
-          </label>
+          </p>
 
-          <input
-            id="discipline-absences"
-            type="number"
-            min="0"
+          <AbsenceControl
             value={absences}
-            onChange={(event) =>
-              setAbsences(Math.max(Number(event.target.value), 0))
-            }
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            onChange={setAbsences}
           />
         </div>
       </div>

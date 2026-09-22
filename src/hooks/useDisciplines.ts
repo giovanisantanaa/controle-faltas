@@ -1,90 +1,85 @@
+import { useEffect, useState } from "react";
+import type { Discipline } from "../types/discipline";
 
-import { useEffect, useState } from 'react'
-import type { Discipline } from '../types/discipline'
-
-const STORAGE_KEY = 'controle-faltas:disciplines'
+const STORAGE_KEY = "controle-faltas:disciplines";
 
 function loadDisciplines(): Discipline[] {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
+    const stored = localStorage.getItem(STORAGE_KEY);
 
     if (!stored) {
-      return []
+      return [];
     }
 
-    const parsed: unknown = JSON.parse(stored)
+    const parsed: unknown = JSON.parse(stored);
 
     if (!Array.isArray(parsed)) {
-      return []
+      return [];
     }
 
-    return parsed
+    return parsed;
   } catch {
-    return []
+    return [];
   }
 }
 
 export function useDisciplines() {
-  const [disciplines, setDisciplines] = useState<Discipline[]>(loadDisciplines)
+  const [disciplines, setDisciplines] = useState<Discipline[]>(loadDisciplines);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(disciplines))
-  }, [disciplines])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(disciplines));
+  }, [disciplines]);
 
-  function addDiscipline(
-    discipline: Omit<Discipline, 'id'>,
-  ) {
+  function addDiscipline(discipline: Omit<Discipline, "id">) {
     const newDiscipline: Discipline = {
       ...discipline,
       id: crypto.randomUUID(),
-    }
+    };
 
-    setDisciplines((current) => [...current, newDiscipline])
+    setDisciplines((current) => [...current, newDiscipline]);
   }
 
   function updateDiscipline(
     id: string,
-    updates: Partial<Omit<Discipline, 'id'>>,
+    updates: Partial<Omit<Discipline, "id">>,
   ) {
     setDisciplines((current) =>
       current.map((discipline) =>
-        discipline.id === id
-          ? { ...discipline, ...updates }
-          : discipline,
+        discipline.id === id ? { ...discipline, ...updates } : discipline,
       ),
-    )
+    );
   }
 
   function removeDiscipline(id: string) {
     setDisciplines((current) =>
       current.filter((discipline) => discipline.id !== id),
-    )
+    );
   }
 
-  function addAbsence(id: string) {
+  function addAbsence(id: string, amount = 1) {
     setDisciplines((current) =>
       current.map((discipline) =>
         discipline.id === id
           ? {
               ...discipline,
-              absences: discipline.absences + 1,
+              absences: discipline.absences + amount,
             }
           : discipline,
       ),
-    )
+    );
   }
 
-  function removeAbsence(id: string) {
+  function removeAbsence(id: string, amount = 1) {
     setDisciplines((current) =>
       current.map((discipline) =>
         discipline.id === id
           ? {
               ...discipline,
-              absences: Math.max(discipline.absences - 1, 0),
+              absences: Math.max(discipline.absences - amount, 0),
             }
           : discipline,
       ),
-    )
+    );
   }
 
   return {
@@ -94,5 +89,5 @@ export function useDisciplines() {
     removeDiscipline,
     addAbsence,
     removeAbsence,
-  }
+  };
 }
