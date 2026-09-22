@@ -1,90 +1,116 @@
 # Controle de Faltas
 
-Aplicacao web para acompanhamento de faltas academicas por disciplina.
+Aplicação web para acompanhamento de faltas acadêmicas por disciplina.
 
-## Visao geral
+[![Demo](https://img.shields.io/badge/🚀_Demo-Acessar%20aplicação-2ea44f)](https://giovanisantanaa.github.io/controle-faltas/)
 
-O **Controle de Faltas** ajuda estudantes a monitorar rapidamente a quantidade de faltas em cada disciplina e a situacao em relacao ao limite permitido.
+## Visão geral
 
-Problema que resolve:
-- Centraliza o controle de faltas em uma interface simples.
-- Evita calculos manuais para saber quando a disciplina entra em risco.
-- Mantem os dados no navegador do proprio usuario.
+O **Controle de Faltas** ajuda estudantes a monitorar rapidamente a quantidade de faltas em cada disciplina e a situação em relação ao limite permitido.
 
-Persistencia:
-- Os dados sao salvos em `localStorage` (chave `controle-faltas:disciplines`), sem backend.
+### Problema que resolve
+
+* Centraliza o controle de faltas em uma interface simples.
+* Evita cálculos manuais para saber quando a disciplina entra em risco.
+* Mantém os dados no navegador do próprio usuário.
+
+### Persistência
+
+Os dados são salvos no `localStorage` do navegador, utilizando a chave `controle-faltas:disciplines`, sem necessidade de backend ou banco de dados.
 
 ## Funcionalidades
 
 Funcionalidades atualmente presentes no projeto:
 
-- Cadastro de disciplinas.
-- Definicao da carga horaria por disciplina.
-- Controle de faltas por disciplina.
-- Adicao e remocao de faltas.
-- Controles rapidos `-2`, `-1`, `+1` e `+2`.
-- Limite de faltas calculado conforme a carga horaria.
-- Indicador de situacao da disciplina.
-- Resumo com total de disciplinas e disciplinas em atencao.
-- Persistencia local dos dados no navegador.
-- Interface responsiva para diferentes tamanhos de tela.
+* Cadastro de disciplinas.
+* Definição da carga horária por disciplina.
+* Controle de faltas por disciplina.
+* Adição e remoção de faltas.
+* Controles rápidos `-2`, `-1`, `+1` e `+2`.
+* Limite de faltas calculado conforme a carga horária.
+* Indicador de situação da disciplina.
+* Resumo com total de disciplinas e disciplinas em atenção.
+* Persistência local dos dados no navegador.
+* Interface responsiva para diferentes tamanhos de tela.
 
 ## Regras de faltas
 
 Tabela de limites utilizada:
 
-| Carga horaria | Limite de faltas |
-| --- | --- |
-| 30h | 9 |
-| 45h | 13 |
-| 60h | 18 |
-| 75h | 22 |
-| 90h | 27 |
-| 120h | 36 |
+| Carga horária | Limite de faltas |
+| ------------- | ---------------- |
+| 30h           | 9                |
+| 45h           | 13               |
+| 60h           | 18               |
+| 75h           | 22               |
+| 90h           | 27               |
+| 120h          | 36               |
 
-Estados de situacao implementados:
+### Estados de situação
 
-| Estado interno | Descricao |
-| --- | --- |
-| `safe` | Dentro do limite |
-| `warning` | Proximo do limite (a partir de 80% do limite) |
-| `limit` | Limite atingido |
-| `failed` | Reprovado por faltas (acima do limite) |
+| Estado interno | Descrição                                     |
+| -------------- | --------------------------------------------- |
+| `safe`         | Dentro do limite                              |
+| `warning`      | Próximo do limite (a partir de 80% do limite) |
+| `limit`        | Limite atingido                               |
+| `failed`       | Reprovado por faltas (acima do limite)        |
 
 ## Tecnologias
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- ESLint
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* ESLint
 
 ## Como executar localmente
 
 ### Requisitos
 
-- Node.js (LTS recomendada)
-- npm
+* Node.js (LTS recomendada)
+* npm
 
-### Comandos principais
+### Instalação
+
+Clone o repositório e instale as dependências:
 
 ```bash
 npm install
+```
+
+### Desenvolvimento
+
+Inicie o servidor de desenvolvimento:
+
+```bash
 npm run dev
 ```
 
-Aplicacao em desenvolvimento: `http://localhost:5173/`
+A aplicação estará disponível em:
 
-### Build de producao
+```text
+http://localhost:5173/
+```
+
+### Build de produção
+
+Para gerar a versão de produção:
 
 ```bash
 npm run build
 ```
 
-### Outros comandos disponiveis
+### Outros comandos disponíveis
+
+Verificar problemas de lint:
 
 ```bash
 npm run lint
+```
+
+Visualizar a build de produção localmente:
+
+```bash
 npm run preview
 ```
 
@@ -92,34 +118,49 @@ npm run preview
 
 ```text
 src/
-  components/   # componentes de interface (cards, formulario, resumo, etc.)
-  hooks/        # regras de estado e persistencia (useDisciplines)
-  utils/        # funcoes utilitarias de calculo de faltas
-  data/         # regras estaticas de negocio (limites por carga horaria)
-  types/        # tipos TypeScript da aplicacao
-  App.tsx       # composicao principal da tela
+  components/   # Componentes de interface
+  hooks/        # Regras de estado e persistência
+  utils/        # Funções utilitárias de cálculo de faltas
+  data/         # Regras estáticas de negócio
+  types/        # Tipos TypeScript da aplicação
+  App.tsx       # Composição principal da tela
 ```
 
 ## CI/CD e GitHub Pages
 
-Este repositorio possui:
+Este repositório possui automações com **GitHub Actions** para garantir a qualidade do código e realizar o deploy da aplicação.
 
-- **CI automatica** (lint + build) em push para `main` e em `pull_request`.
-- **Deploy automatico no GitHub Pages** em push para `main`.
+### CI
 
-URL publica configurada:
+A integração contínua é executada:
 
-- https://giovanisantanaa.github.io/controle-faltas/
+* Em `push` para a branch `main`.
+* Em `pull_request`.
+
+A pipeline executa:
+
+1. Instalação das dependências.
+2. Verificação do ESLint.
+3. Build da aplicação.
+
+### Deploy
+
+O deploy no **GitHub Pages** é realizado automaticamente a cada `push` para a branch `main`.
+
+Após uma alteração ser enviada para a `main`, o GitHub executa o processo de build e publica automaticamente a nova versão da aplicação.
 
 ## Desenvolvimento
 
 Para contribuir:
 
 1. Crie uma branch a partir de `main`.
-2. Faca as alteracoes necessarias.
-3. Rode `npm run lint` e `npm run build`.
-4. Abra um Pull Request com a descricao das mudancas.
+2. Faça as alterações necessárias.
+3. Execute `npm run lint`.
+4. Execute `npm run build`.
+5. Abra um Pull Request com uma descrição das alterações realizadas.
 
-## Licenca
+## Licença
 
-Licenca ainda nao definida neste repositorio.
+Este projeto está licenciado sob a [MIT License](LICENSE).
+
+Você é livre para usar, copiar, modificar, distribuir e utilizar este projeto, inclusive para fins comerciais, desde que os termos da licença sejam respeitados.
