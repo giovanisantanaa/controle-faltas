@@ -32,7 +32,7 @@ const statusContent = {
 } as const
 
 const controlClassName =
-  'flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition-all duration-150 hover:bg-slate-900 hover:text-white active:scale-95 active:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-30'
+  'flex h-10 min-w-12 items-center justify-center rounded-lg border border-transparent bg-transparent text-sm font-medium text-slate-500 transition-all duration-150 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 active:bg-slate-800 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-transparent disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent disabled:hover:text-slate-300 disabled:hover:border-transparent disabled:active:scale-100'
 
 export function DisciplineCard({
   discipline,
@@ -148,7 +148,7 @@ export function DisciplineCard({
           className={controlClassName}
           aria-label="Adicionar uma falta"
         >
-          +8
+          +1
         </button>
 
         <button

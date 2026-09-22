@@ -19,6 +19,9 @@ function AbsenceControl({
   value: number
   onChange: (value: number) => void
 }) {
+  const controlClassName =
+    'flex h-10 min-w-12 items-center justify-center rounded-lg border border-transparent bg-transparent text-sm font-medium text-slate-500 transition-all duration-150 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 active:bg-slate-800 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-transparent disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent disabled:hover:text-slate-300 disabled:hover:border-transparent disabled:active:scale-100'
+
   function changeValue(amount: number) {
     onChange(Math.max(value + amount, 0))
   }
@@ -29,7 +32,7 @@ function AbsenceControl({
         type="button"
         onClick={() => changeValue(-2)}
         disabled={value === 0}
-        className="flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30"
+        className={controlClassName}
       >
         −2
       </button>
@@ -38,7 +41,7 @@ function AbsenceControl({
         type="button"
         onClick={() => changeValue(-1)}
         disabled={value === 0}
-        className="flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30"
+        className={controlClassName}
       >
         −1
       </button>
@@ -56,7 +59,7 @@ function AbsenceControl({
       <button
         type="button"
         onClick={() => changeValue(1)}
-        className="flex h-10 min-w-12 items-center justify-center rounded-lg text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900"
+        className={controlClassName}
       >
         +1
       </button>
@@ -64,7 +67,7 @@ function AbsenceControl({
       <button
         type="button"
         onClick={() => changeValue(2)}
-        className="flex h-10 min-w-12 items-center justify-center rounded-lg bg-slate-900 text-sm font-medium text-white transition hover:bg-slate-800"
+        className={controlClassName}
       >
         +2
       </button>
