@@ -30,10 +30,11 @@ export function useDisciplines() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(disciplines));
   }, [disciplines]);
 
-  function addDiscipline(discipline: Omit<Discipline, "id">) {
+  function addDiscipline(discipline: Omit<Discipline, "id" | "semesterId">, semesterId: string) {
     const newDiscipline: Discipline = {
       ...discipline,
       id: crypto.randomUUID(),
+      semesterId,
     };
 
     setDisciplines((current) => [...current, newDiscipline]);
@@ -82,6 +83,16 @@ export function useDisciplines() {
     );
   }
 
+  function removeBySemester(semesterId: string) {
+    setDisciplines((current) =>
+      current.filter((discipline) => discipline.semesterId !== semesterId),
+    );
+  }
+
+  function replaceAll(next: Discipline[]) {
+    setDisciplines(next);
+  }
+
   return {
     disciplines,
     addDiscipline,
@@ -89,5 +100,7 @@ export function useDisciplines() {
     removeDiscipline,
     addAbsence,
     removeAbsence,
+    removeBySemester,
+    replaceAll,
   };
 }
