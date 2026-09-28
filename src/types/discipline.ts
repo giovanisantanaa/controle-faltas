@@ -1,4 +1,5 @@
 
+import type { CardColorId } from '../data/cardColors'
 import type { Workload } from '../data/absenceRules'
 
 export type Discipline = {
@@ -7,4 +8,5 @@ export type Discipline = {
   name: string
   workload: Workload
   absences: number
+  color?: CardColorId
 }

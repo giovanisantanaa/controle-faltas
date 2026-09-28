@@ -7,7 +7,7 @@ import { SemesterBar } from "./components/SemesterBar";
 import { Summary } from "./components/Summary";
 import { useDisciplines } from "./hooks/useDisciplines";
 import { useSemesters } from "./hooks/useSemesters";
-import { exportData, parseImportFile } from "./utils/importExport";
+import { exportData, parseImportFile, parseImportText, serializeData } from "./utils/importExport";
 
 function App() {
   const [showForm, setShowForm] = useState(false);
@@ -25,6 +25,7 @@ function App() {
   const {
     disciplines,
     addDiscipline,
+    updateDiscipline,
     removeDiscipline,
     addAbsence,
     removeAbsence,
@@ -54,21 +55,31 @@ function App() {
     removeBySemester(id);
   }
 
+  function applyImport(payload: { semesters: typeof semesters; disciplines: typeof disciplines }) {
+    replaceSemesters(payload.semesters);
+    replaceDisciplines(payload.disciplines);
+  }
+
   function handleImport(file: File) {
     parseImportFile(file)
-      .then(({ semesters: importedSemesters, disciplines: importedDisciplines }) => {
-        replaceSemesters(importedSemesters);
-        replaceDisciplines(importedDisciplines);
-      })
+      .then(applyImport)
       .catch(() => {
         window.alert("Não foi possível importar o arquivo. Verifique se é um export válido.");
       });
   }
 
+  function handleImportText(text: string) {
+    try {
+      applyImport(parseImportText(text));
+    } catch {
+      window.alert("Não foi possível importar o código. Verifique se é um export válido.");
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-50">
       <div className="mx-auto min-h-screen max-w-5xl px-5 py-8 sm:px-8 lg:py-12">
-        <Header onAdd={() => setShowForm(true)} />
+        <Header />
 
         <div className="mt-8 space-y-6">
           <SemesterBar
@@ -79,7 +90,10 @@ function App() {
             onRename={renameSemester}
             onRemove={handleRemoveSemester}
             onExport={() => exportData(semesters, disciplines)}
+            onExportText={() => serializeData(semesters, disciplines)}
             onImport={handleImport}
+            onImportText={handleImportText}
+            onAddDiscipline={() => setShowForm(true)}
           />
 
           {!activeId ? (
@@ -120,6 +134,7 @@ function App() {
                       onAddAbsence={(amount) => addAbsence(discipline.id, amount)}
                       onRemoveAbsence={(amount) => removeAbsence(discipline.id, amount)}
                       onDelete={() => removeDiscipline(discipline.id)}
+                      onColorChange={(color) => updateDiscipline(discipline.id, { color })}
                     />
                   ))}
                 </section>

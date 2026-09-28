@@ -6,9 +6,13 @@ type ExportPayload = {
   disciplines: Discipline[];
 };
 
-export function exportData(semesters: Semester[], disciplines: Discipline[]) {
+export function serializeData(semesters: Semester[], disciplines: Discipline[]) {
   const payload: ExportPayload = { semesters, disciplines };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
+  return JSON.stringify(payload, null, 2);
+}
+
+export function exportData(semesters: Semester[], disciplines: Discipline[]) {
+  const blob = new Blob([serializeData(semesters, disciplines)], {
     type: "application/json",
   });
   const url = URL.createObjectURL(blob);
@@ -21,8 +25,7 @@ export function exportData(semesters: Semester[], disciplines: Discipline[]) {
   URL.revokeObjectURL(url);
 }
 
-export async function parseImportFile(file: File): Promise<ExportPayload> {
-  const text = await file.text();
+export function parseImportText(text: string): ExportPayload {
   const parsed: unknown = JSON.parse(text);
 
   if (
@@ -31,8 +34,12 @@ export async function parseImportFile(file: File): Promise<ExportPayload> {
     !Array.isArray((parsed as ExportPayload).semesters) ||
     !Array.isArray((parsed as ExportPayload).disciplines)
   ) {
-    throw new Error("Arquivo inválido");
+    throw new Error("Dados inválidos");
   }
 
   return parsed as ExportPayload;
+}
+
+export async function parseImportFile(file: File): Promise<ExportPayload> {
+  return parseImportText(await file.text());
 }
