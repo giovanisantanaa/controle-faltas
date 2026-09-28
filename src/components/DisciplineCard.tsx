@@ -12,36 +12,38 @@ type DisciplineCardProps = {
   onAddAbsence: (amount?: number) => void
   onRemoveAbsence: (amount?: number) => void
   onDelete: () => void
+  onEdit: () => void
   onColorChange: (color: CardColorId) => void
 }
 
 const statusContent = {
   safe: {
     label: 'Dentro do limite',
-    className: 'text-emerald-700 bg-emerald-50',
+    className: 'text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/50',
   },
   warning: {
     label: 'Próximo do limite',
-    className: 'text-amber-700 bg-amber-50',
+    className: 'text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/50',
   },
   limit: {
     label: 'Limite atingido',
-    className: 'text-orange-700 bg-orange-50',
+    className: 'text-orange-700 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/50',
   },
   failed: {
     label: 'Reprovado por faltas',
-    className: 'text-red-700 bg-red-50',
+    className: 'text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-950/50',
   },
 } as const
 
 const controlClassName =
-  'flex h-10 min-w-12 items-center justify-center rounded-lg border border-transparent bg-transparent text-sm font-medium text-slate-500 transition-all duration-150 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 active:bg-slate-800 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-transparent disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent disabled:hover:text-slate-300 disabled:hover:border-transparent disabled:active:scale-100'
+  'flex h-10 min-w-12 items-center justify-center rounded-lg border border-transparent bg-transparent text-sm font-medium text-slate-500 transition-all duration-150 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 active:bg-slate-800 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-transparent disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent disabled:hover:text-slate-300 disabled:hover:border-transparent disabled:active:scale-100 dark:text-slate-400 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900 dark:active:bg-slate-300 dark:disabled:text-slate-600 dark:disabled:hover:text-slate-600'
 
 export function DisciplineCard({
   discipline,
   onAddAbsence,
   onRemoveAbsence,
   onDelete,
+  onEdit,
   onColorChange,
 }: DisciplineCardProps) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -81,14 +83,14 @@ export function DisciplineCard({
   const cardColor = getCardColor(discipline.color)
 
   return (
-    <article className={`rounded-2xl border p-5 shadow-sm ${cardColor.card}`}>
+    <article className={`flex h-full flex-col rounded-2xl border p-5 shadow-sm ${cardColor.card}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-semibold text-slate-900">
+          <h3 className="font-semibold text-slate-900 dark:text-white">
             {discipline.name}
           </h3>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {discipline.workload} horas
           </p>
         </div>
@@ -100,7 +102,7 @@ export function DisciplineCard({
             aria-label="Mais opções"
             aria-haspopup="true"
             aria-expanded={menuOpen}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           >
             <svg
               width="18"
@@ -120,11 +122,11 @@ export function DisciplineCard({
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50">
+            <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
               {confirmingDelete ? (
                 <div className="p-1.5">
-                  <p className="text-xs leading-5 text-slate-600">
-                    Excluir <span className="font-medium text-slate-900">{discipline.name}</span>?
+                  <p className="text-xs leading-5 text-slate-600 dark:text-slate-300">
+                    Excluir <span className="font-medium text-slate-900 dark:text-white">{discipline.name}</span>?
                     Essa ação não pode ser desfeita.
                   </p>
 
@@ -132,7 +134,7 @@ export function DisciplineCard({
                     <button
                       type="button"
                       onClick={() => setConfirmingDelete(false)}
-                      className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100"
+                      className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
                     >
                       Cancelar
                     </button>
@@ -151,7 +153,7 @@ export function DisciplineCard({
                   <button
                     type="button"
                     onClick={() => setColorOpen((current) => !current)}
-                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50"
+                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700"
                   >
                     <span className="flex items-center gap-2">
                       <span className={`h-3.5 w-3.5 rounded-full ${cardColor.dot}`} />
@@ -185,7 +187,7 @@ export function DisciplineCard({
                           onClick={() => onColorChange(color.id)}
                           aria-label={color.label}
                           className={`flex h-7 w-7 items-center justify-center rounded-full transition hover:scale-110 ${
-                            color.id === cardColor.id ? 'ring-2 ring-slate-900 ring-offset-2' : ''
+                            color.id === cardColor.id ? 'ring-2 ring-slate-900 ring-offset-2 dark:ring-slate-100 dark:ring-offset-slate-800' : ''
                           }`}
                         >
                           <span className={`h-4 w-4 rounded-full ${color.dot}`} />
@@ -196,8 +198,19 @@ export function DisciplineCard({
 
                   <button
                     type="button"
+                    onClick={() => {
+                      onEdit()
+                      setMenuOpen(false)
+                    }}
+                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => setConfirmingDelete(true)}
-                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-red-600 transition hover:bg-red-50"
+                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
                   >
                     Excluir
                   </button>
@@ -208,14 +221,14 @@ export function DisciplineCard({
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 flex flex-1 flex-col justify-end">
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Faltas
             </p>
 
-            <p className="mt-1 text-2xl font-semibold text-slate-900 select-none">
+            <p className="mt-1 text-2xl font-semibold text-slate-900 select-none dark:text-white">
               {discipline.absences}
 
               <span className="text-base font-normal text-slate-400">
@@ -232,9 +245,9 @@ export function DisciplineCard({
           </span>
         </div>
 
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
           <div
-            className="h-full rounded-full bg-slate-900 transition-all duration-300"
+            className="h-full rounded-full bg-slate-900 transition-all duration-300 dark:bg-slate-100"
             style={{
               width: `${percentage}%`,
             }}
@@ -242,7 +255,7 @@ export function DisciplineCard({
         </div>
       </div>
 
-      <div className="mt-5 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2">
+      <div className="mt-5 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800">
         <button
           type="button"
           onClick={() => onRemoveAbsence(2)}
@@ -264,7 +277,7 @@ export function DisciplineCard({
         </button>
 
         <div className="min-w-16 text-center select-none">
-          <span className="text-lg font-semibold text-slate-900">
+          <span className="text-lg font-semibold text-slate-900 dark:text-white">
             {discipline.absences}
           </span>
 

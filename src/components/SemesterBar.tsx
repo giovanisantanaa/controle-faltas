@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import type { Theme } from "../hooks/useTheme";
 import type { Semester } from "../types/semester";
+import { ThemeToggle } from "./ThemeToggle";
 
 type SemesterBarProps = {
   semesters: Semester[];
@@ -13,6 +15,8 @@ type SemesterBarProps = {
   onImport: (file: File) => void;
   onImportText: (text: string) => void;
   onAddDiscipline: () => void;
+  theme: Theme;
+  onThemeChange: (theme: Theme) => void;
 };
 
 export function SemesterBar({
@@ -27,6 +31,8 @@ export function SemesterBar({
   onImport,
   onImportText,
   onAddDiscipline,
+  theme,
+  onThemeChange,
 }: SemesterBarProps) {
   const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -145,11 +151,11 @@ export function SemesterBar({
         <button
           type="button"
           onClick={() => setOpen((current) => !current)}
-          className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition hover:border-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition hover:border-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-700"
           aria-haspopup="listbox"
           aria-expanded={open}
         >
-          <span className="font-medium text-slate-900">
+          <span className="font-medium text-slate-900 dark:text-white">
             {active ? active.name : "Nenhum semestre"}
           </span>
 
@@ -174,7 +180,7 @@ export function SemesterBar({
         {open && (
           <div
             role="listbox"
-            className="absolute z-20 mt-2 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50"
+            className="absolute z-20 mt-2 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40"
           >
             {semesters.map((semester) => {
               const selected = semester.id === activeId;
@@ -191,12 +197,12 @@ export function SemesterBar({
                       type="text"
                       value={draftName}
                       onChange={(event) => setDraftName(event.target.value)}
-                      className="w-full min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                      className="w-full min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-700"
                     />
 
                     <button
                       type="submit"
-                      className="shrink-0 rounded-lg bg-slate-900 px-2.5 py-2 text-xs font-medium text-white transition hover:bg-slate-800"
+                      className="shrink-0 rounded-lg bg-slate-900 px-2.5 py-2 text-xs font-medium text-white transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
                     >
                       Salvar
                     </button>
@@ -204,7 +210,7 @@ export function SemesterBar({
                     <button
                       type="button"
                       onClick={() => setRenamingId(null)}
-                      className="shrink-0 rounded-lg px-2 py-2 text-xs text-slate-500 hover:bg-slate-100"
+                      className="shrink-0 rounded-lg px-2 py-2 text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
                     >
                       Cancelar
                     </button>
@@ -219,8 +225,8 @@ export function SemesterBar({
                   aria-selected={selected}
                   className={`group flex w-full items-center rounded-lg transition ${
                     selected
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-white"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                   }`}
                 >
                   <button
@@ -241,7 +247,7 @@ export function SemesterBar({
                       setRenamingId(semester.id);
                     }}
                     aria-label={`Renomear ${semester.name}`}
-                    className="shrink-0 px-2 py-2.5 text-xs text-slate-400 opacity-0 transition hover:text-slate-900 focus:opacity-100 group-hover:opacity-100"
+                    className="shrink-0 px-2 py-2.5 text-xs text-slate-400 opacity-0 transition hover:text-slate-900 focus:opacity-100 group-hover:opacity-100 dark:hover:text-white"
                   >
                     Editar
                   </button>
@@ -250,7 +256,7 @@ export function SemesterBar({
                     type="button"
                     onClick={() => handleRemove(semester)}
                     aria-label={`Excluir ${semester.name}`}
-                    className="shrink-0 px-2 py-2.5 pr-3 text-xs text-slate-400 opacity-0 transition hover:text-red-600 focus:opacity-100 group-hover:opacity-100"
+                    className="shrink-0 px-2 py-2.5 pr-3 text-xs text-slate-400 opacity-0 transition hover:text-red-600 focus:opacity-100 group-hover:opacity-100 dark:hover:text-red-400"
                   >
                     Excluir
                   </button>
@@ -266,7 +272,7 @@ export function SemesterBar({
                   value={draftName}
                   onChange={(event) => setDraftName(event.target.value)}
                   placeholder="Ex.: 2026.1"
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-700"
                 />
               </form>
             ) : (
@@ -276,7 +282,7 @@ export function SemesterBar({
                   setCreating(true);
                   setDraftName("");
                 }}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
               >
                 + Novo semestre
               </button>
@@ -292,7 +298,7 @@ export function SemesterBar({
           aria-label="Exportar ou importar dados"
           aria-haspopup="true"
           aria-expanded={settingsOpen}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 transition hover:border-slate-400 hover:text-slate-900"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 transition hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-white"
         >
           <svg
             width="18"
@@ -311,11 +317,18 @@ export function SemesterBar({
         </button>
 
         {settingsOpen && (
-          <div className="absolute right-0 z-20 mt-2 w-72 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50">
+          <div className="absolute right-0 z-20 mt-2 w-72 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Tema</span>
+              <ThemeToggle theme={theme} onChange={onThemeChange} />
+            </div>
+
+            <div className="my-1 h-px bg-slate-100 dark:bg-slate-700" />
+
             <button
               type="button"
               onClick={() => setExportMenuOpen((current) => !current)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               Exportar dados
               <svg
@@ -341,7 +354,7 @@ export function SemesterBar({
                 <button
                   type="button"
                   onClick={onExport}
-                  className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                 >
                   Baixar arquivo
                 </button>
@@ -349,7 +362,7 @@ export function SemesterBar({
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                 >
                   {copied ? "Copiado!" : "Copiar código"}
                 </button>
@@ -359,7 +372,7 @@ export function SemesterBar({
             <button
               type="button"
               onClick={() => setImportMenuOpen((current) => !current)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               Importar dados
               <svg
@@ -386,7 +399,7 @@ export function SemesterBar({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                    className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                   >
                     Escolher arquivo
                   </button>
@@ -394,7 +407,7 @@ export function SemesterBar({
                   <button
                     type="button"
                     onClick={() => setPasting((current) => !current)}
-                    className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                    className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                   >
                     Colar código
                   </button>
@@ -408,7 +421,7 @@ export function SemesterBar({
                       onChange={(event) => setPasteText(event.target.value)}
                       placeholder="Cole aqui o código exportado"
                       rows={5}
-                      className="w-full rounded-lg border border-slate-300 p-2.5 font-mono text-xs outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                      className="w-full rounded-lg border border-slate-300 p-2.5 font-mono text-xs outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-700"
                     />
 
                     <div className="mt-2 flex justify-end gap-2">
@@ -418,14 +431,14 @@ export function SemesterBar({
                           setPasting(false);
                           setPasteText("");
                         }}
-                        className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100"
+                        className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
                       >
                         Cancelar
                       </button>
 
                       <button
                         type="submit"
-                        className="rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-slate-800"
+                        className="rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
                       >
                         Importar
                       </button>
@@ -450,7 +463,7 @@ export function SemesterBar({
         type="button"
         onClick={onAddDiscipline}
         disabled={!activeId}
-        className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:disabled:bg-slate-700 dark:disabled:text-slate-400"
       >
         + Nova disciplina
       </button>

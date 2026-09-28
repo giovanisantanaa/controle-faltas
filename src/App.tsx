@@ -7,10 +7,14 @@ import { SemesterBar } from "./components/SemesterBar";
 import { Summary } from "./components/Summary";
 import { useDisciplines } from "./hooks/useDisciplines";
 import { useSemesters } from "./hooks/useSemesters";
+import { useTheme } from "./hooks/useTheme";
 import { exportData, parseImportFile, parseImportText, serializeData } from "./utils/importExport";
+import type { Discipline } from "./types/discipline";
 
 function App() {
   const [showForm, setShowForm] = useState(false);
+  const [editingDiscipline, setEditingDiscipline] = useState<Discipline | null>(null);
+  const { theme, setTheme } = useTheme();
 
   const {
     semesters,
@@ -50,6 +54,19 @@ function App() {
     setShowForm(false);
   }
 
+  function handleEditDiscipline(data: {
+    name: string;
+    workload: 30 | 45 | 60 | 75 | 90 | 120;
+    absences: number;
+  }) {
+    if (!editingDiscipline) {
+      return;
+    }
+
+    updateDiscipline(editingDiscipline.id, data);
+    setEditingDiscipline(null);
+  }
+
   function handleRemoveSemester(id: string) {
     removeSemester(id);
     removeBySemester(id);
@@ -77,7 +94,7 @@ function App() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="mx-auto min-h-screen max-w-5xl px-5 py-8 sm:px-8 lg:py-12">
         <Header />
 
@@ -93,7 +110,12 @@ function App() {
             onExportText={() => serializeData(semesters, disciplines)}
             onImport={handleImport}
             onImportText={handleImportText}
-            onAddDiscipline={() => setShowForm(true)}
+            theme={theme}
+            onThemeChange={setTheme}
+            onAddDiscipline={() => {
+              setEditingDiscipline(null);
+              setShowForm(true);
+            }}
           />
 
           {!activeId ? (
@@ -123,6 +145,14 @@ function App() {
                 />
               )}
 
+              {editingDiscipline && (
+                <DisciplineForm
+                  initialValues={editingDiscipline}
+                  onSubmit={handleEditDiscipline}
+                  onCancel={() => setEditingDiscipline(null)}
+                />
+              )}
+
               {visibleDisciplines.length === 0 && !showForm ? (
                 <EmptyState onAdd={() => setShowForm(true)} />
               ) : (
@@ -134,6 +164,10 @@ function App() {
                       onAddAbsence={(amount) => addAbsence(discipline.id, amount)}
                       onRemoveAbsence={(amount) => removeAbsence(discipline.id, amount)}
                       onDelete={() => removeDiscipline(discipline.id)}
+                      onEdit={() => {
+                        setShowForm(false);
+                        setEditingDiscipline(discipline);
+                      }}
                       onColorChange={(color) => updateDiscipline(discipline.id, { color })}
                     />
                   ))}
