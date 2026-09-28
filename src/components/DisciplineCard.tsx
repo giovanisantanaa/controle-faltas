@@ -122,7 +122,7 @@ export function DisciplineCard({
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
+            <div className="absolute right-0 z-20 mt-2 w-48 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
               {confirmingDelete ? (
                 <div className="p-1.5">
                   <p className="text-xs leading-5 text-slate-600 dark:text-slate-300">

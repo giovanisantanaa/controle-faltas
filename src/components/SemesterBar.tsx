@@ -146,7 +146,7 @@ export function SemesterBar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="relative flex flex-wrap items-center gap-3">
       <div ref={containerRef} className="relative">
         <button
           type="button"
@@ -180,7 +180,7 @@ export function SemesterBar({
         {open && (
           <div
             role="listbox"
-            className="absolute z-20 mt-2 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40"
+            className="absolute z-20 mt-2 w-64 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40"
           >
             {semesters.map((semester) => {
               const selected = semester.id === activeId;
@@ -291,7 +291,7 @@ export function SemesterBar({
         )}
       </div>
 
-      <div ref={settingsRef} className="relative ml-auto">
+      <div ref={settingsRef} className="ml-auto">
         <button
           type="button"
           onClick={() => setSettingsOpen((current) => !current)}
@@ -317,7 +317,7 @@ export function SemesterBar({
         </button>
 
         {settingsOpen && (
-          <div className="absolute right-0 z-20 mt-2 w-72 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
+          <div className="absolute left-4 right-4 z-20 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-200/50 sm:left-auto sm:right-0 sm:w-72 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
             <div className="flex items-center justify-between px-3 py-2">
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Tema</span>
               <ThemeToggle theme={theme} onChange={onThemeChange} />
